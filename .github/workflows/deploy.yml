@@ -1,0 +1,39 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Backend Image
+        run: docker build -t dhanraj18/backend:latest ./backend
+
+      - name: Build Frontend Image
+        run: docker build -t dhanraj18/frontend:latest ./frontend
+
+      - name: Push Images
+        run: |
+          docker push dhanraj18/backend:latest
+          docker push dhanraj18/frontend:latest
+
+      - name: Deploy to VM
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            cd mean-crud-devops/crud-dd-task-mean-app
+            docker compose pull
+            docker compose up -d
