@@ -17,10 +17,10 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Backend Image
-        run: docker build -t dhanraj18/backend:latest ./backend
+        run: docker build -t dhanraj18/backend:latest ./crud-dd-task-mean-app/backend
 
       - name: Build Frontend Image
-        run: docker build -t dhanraj18/frontend:latest ./frontend
+        run: docker build -t dhanraj18/frontend:latest ./crud-dd-task-mean-app/frontend
 
       - name: Push Images
         run: |
