@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+
+  backend:
+    image: dhanraj18/backend:latest
+    container_name: backend
+    ports:
+      - "5000:8080"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/dd_db
+    depends_on:
+      - mongodb
+
+  frontend:
+    image: dhanraj18/frontend:latest
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
